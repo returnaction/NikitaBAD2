@@ -23,5 +23,9 @@ namespace NikitaBAD2.Models.ApplicationUser
         public string? Casino { get; set; }
 
         public string? Position { get; set; }
+
+
+        // horn bet
+        public int LongestCorrectAnswerStrekHORN { get; set; }
     }
 }
