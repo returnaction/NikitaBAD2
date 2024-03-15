@@ -8,22 +8,45 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     public class HornHighController : Controller
     {
         public PropBet hornHigh;
+
         public IActionResult Play()
         {
-            return View();
+            hornHigh = GenerateNewHornHighBet();
+            return View(hornHigh);
         }
 
         [HttpPost]
-        public IActionResult Play()
+        public IActionResult Play(int userAnswer,int bet, int rolledNumber, int placedBet)
         {
-            
+            if(userAnswer == CalculateCorrectAnswer(bet,placedBet, rolledNumber))
+            {
+                return RedirectToAction(nameof(Play));
+            }
+            else
+            {
+                hornHigh = new PropBet();
+                hornHigh.Bet = bet;
+                hornHigh.RolledNumber = placedBet;
+                hornHigh.PlacedBet = placedBet;
+                return View(hornHigh);
+            }
         }
 
-        private int CalculateCorrectAnse(int bet, int placedbet, int rolledNumber)
+        private PropBet GenerateNewHornHighBet()
+        {
+            PropBet hornHigh = new();
+            hornHigh.Bet = GenerateRandomBet();
+            hornHigh.RolledNumber = RollDice();
+            hornHigh.PlacedBet = GenerateRandomPlace();
+
+            return hornHigh;
+        }
+
+        private int CalculateCorrectAnswer(int bet, int placedBet, int rolledNumber)
         {
             int result = 0;
 
-            switch (placedbet)
+            switch (placedBet)
             {
                 case 2:
                     switch (rolledNumber)
