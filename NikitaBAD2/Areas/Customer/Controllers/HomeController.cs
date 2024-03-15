@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using NikitaBAD2.Models;
 using System.Diagnostics;
 
-namespace NikitaBAD2.Controllers
+namespace NikitaBAD2.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

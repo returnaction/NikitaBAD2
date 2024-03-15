@@ -10,37 +10,44 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     [Area("Customer")]
     public class HornController : Controller
     {
-        private const int MinBet = 4;
-        private const int MaxBet = 200;
-        public IActionResult Index()
+        public HornBet hornBet;
+
+        public IActionResult Play()
         {
-            var games = new CrapsGame();
-            return View(games);
+            hornBet = GenerateNewHornBet();
+            return View(hornBet);
         }
 
+
+        // Change later to get a model instead of 3 different numbers
         [HttpPost]
-        public IActionResult Play(int userAnswer)
+        public IActionResult Play(int userAnswer, int bet, int rolledNumber)
         {
-            var game = new CrapsGame();
-
-
-            game.RolledNumber = RollDice();
-            game.Bet = GeneretateRandomBet();
-
-            if(userAnswer == CalculateCorrectAnswer(game.Bet, game.RolledNumber))
+            // if answer is correct 
+            if(userAnswer == CalculateCorrectAnswer(bet, rolledNumber))
             {
-                game.CorrectAnswer = userAnswer;
-
+                return RedirectToAction(nameof(Play));
             }
+            // if answer is wrong
             else
             {
-                game.ErrorMessage = "Incorrect answer. Try again!";
+                hornBet = new HornBet();
+                hornBet.Bet = bet;
+                hornBet.RolledNumber = rolledNumber;
+                hornBet.ErrorMessage = "Wrong payout";
+                return View(hornBet);
             }
-
-            return View("Index", game);
 
         }
 
+        private HornBet GenerateNewHornBet()
+        {
+            HornBet hornBet = new();
+            hornBet.Bet = GeneretateRandomBet();
+            hornBet.RolledNumber = RollDice();
+
+            return hornBet;
+        }
 
         private int CalculateCorrectAnswer(int bet, int rolledNumber)
         {
@@ -48,13 +55,9 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             {
                 return bet * 3;
             }
-            else if (rolledNumber == 2 || rolledNumber == 12)
-            {
-                return (bet * 7) - (bet / 4);
-            }
             else
             {
-                return 0;
+                return (bet * 7) - (bet / 4);
             }
         }
 
