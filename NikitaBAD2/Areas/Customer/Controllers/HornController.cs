@@ -34,7 +34,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
                 hornBet = new PropBet();
                 hornBet.Bet = bet;
                 hornBet.RolledNumber = rolledNumber;
-                hornBet.ErrorMessage = "Wrong payout";
+                hornBet.ErrorMessage = "Wrong Payout!";
                 return View(hornBet);
             }
 

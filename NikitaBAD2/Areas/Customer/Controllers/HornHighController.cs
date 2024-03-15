@@ -28,6 +28,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
                 hornHigh.Bet = bet;
                 hornHigh.RolledNumber = placedBet;
                 hornHigh.PlacedBet = placedBet;
+                hornHigh.ErrorMessage = "Wrong payout!";
                 return View(hornHigh);
             }
         }
