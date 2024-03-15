@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NikitaBAD2.Data;
 using NikitaBAD2.Migrations;
-using NikitaBAD2.Models;
+using NikitaBAD2.Models.PropBets;
 
 namespace NikitaBAD2.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class HornController : Controller
     {
-        public HornBet hornBet;
+        public PropBet hornBet;
 
         public IActionResult Play()
         {
@@ -31,7 +31,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             // if answer is wrong
             else
             {
-                hornBet = new HornBet();
+                hornBet = new PropBet();
                 hornBet.Bet = bet;
                 hornBet.RolledNumber = rolledNumber;
                 hornBet.ErrorMessage = "Wrong payout";
@@ -40,10 +40,10 @@ namespace NikitaBAD2.Areas.Customer.Controllers
 
         }
 
-        private HornBet GenerateNewHornBet()
+        private PropBet GenerateNewHornBet()
         {
-            HornBet hornBet = new();
-            hornBet.Bet = GeneretateRandomBet();
+            PropBet hornBet = new();
+            hornBet.Bet = GeneratateRandomBet();
             hornBet.RolledNumber = RollDice();
 
             return hornBet;
@@ -69,7 +69,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             return outcome[radnom.Next(0, outcome.Length)];
         }
 
-        private int GeneretateRandomBet()
+        private int GeneratateRandomBet()
         {
             Random random = new Random();
 

@@ -1,6 +1,6 @@
-﻿namespace NikitaBAD2.Models
+﻿namespace NikitaBAD2.Models.PropBets
 {
-    public class HornBet
+    public class PropBet
     {
         public int Bet { get; set; }
         public int RolledNumber { get; set; }
