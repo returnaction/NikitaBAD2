@@ -3,11 +3,62 @@ using NikitaBAD2.Models.PropBets;
 
 namespace NikitaBAD2.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class ComeBetController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Play()
         {
             ComeBet comeBet = GenerateComeBet();
+            return View(comeBet);
+        }
+
+        [HttpPost]
+        public IActionResult Play(int userAnswer, int rolledNumber, int flatBet, int odds)
+        {
+            ComeBet comeBet = new();
+            switch (rolledNumber)
+            {
+                case 4:
+                case 10:
+                    if (userAnswer == CaluclateCorrectAnswerFor4or10(flatBet, odds))
+                        return RedirectToAction(nameof(Play));
+                    else
+                    {
+                        comeBet.FlatBet = flatBet;
+                        comeBet.Odds = odds;
+                        comeBet.RolledNumber = rolledNumber;
+                        comeBet.ErrorMessage = "Wrong Payout!";
+                    }
+                    break;
+
+                case 5:
+                case 9:
+                    if (userAnswer == CaluclateCorrectAnswerFor5or9(flatBet, odds))
+                        return RedirectToAction(nameof(Play));
+                    else
+                    {
+                        comeBet.FlatBet = flatBet;
+                        comeBet.Odds = odds;
+                        comeBet.RolledNumber = rolledNumber;
+                        comeBet.ErrorMessage = "Wrong Payout!";
+                    }
+                    break;
+
+                case 6:
+                case 8:
+                    if (userAnswer == CaluclateCorrectAnswerFor6or8(flatBet, odds))
+                        return RedirectToAction(nameof(Play));
+                    else
+                    {
+                        comeBet.FlatBet = flatBet;
+                        comeBet.Odds = odds;
+                        comeBet.RolledNumber = rolledNumber;
+                        comeBet.ErrorMessage = "Wrong Payout!";
+                    }
+
+                    break;
+            }
+
             return View(comeBet);
         }
 
@@ -91,7 +142,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             return [flatBet, odds];
         }
 
-        private int CaluclateCorrectAnswerFor6or10(int flatBet, int odds)
+        private int CaluclateCorrectAnswerFor6or8(int flatBet, int odds)
         {
             return (odds + (odds / 5)) + flatBet;
         }
