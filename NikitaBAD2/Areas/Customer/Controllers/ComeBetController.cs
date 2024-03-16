@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NikitaBAD2.Models.PropBets;
+using NikitaBAD2.Models.LineBets;
 
 namespace NikitaBAD2.Areas.Customer.Controllers
 {

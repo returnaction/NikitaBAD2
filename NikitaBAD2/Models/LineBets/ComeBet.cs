@@ -1,4 +1,4 @@
-﻿namespace NikitaBAD2.Models.PropBets
+﻿namespace NikitaBAD2.Models.LineBets
 {
     public class ComeBet
     {
