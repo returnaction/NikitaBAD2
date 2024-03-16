@@ -7,6 +7,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     public class WorldController : Controller
     {
         public PropBet worldBet;
+
         public IActionResult Play()
         {
             worldBet = GenerateWorlBet();
