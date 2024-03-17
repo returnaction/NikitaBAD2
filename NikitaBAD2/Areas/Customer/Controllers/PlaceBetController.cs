@@ -13,33 +13,23 @@ namespace NikitaBAD2.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Play(int userAnswer, int rolledNumber, int bet)
+        public IActionResult Play(PlaceBet placeBet)
         {
-            PlaceBet placeBet = new();
-
-            switch (rolledNumber)
+            switch (placeBet.RolledNumber)
             {
                 case 5:
                 case 9:
-                    if (userAnswer == CaluclateCorrectAnswerFor5or9(bet))
+                    if (placeBet.Answer == CaluclateCorrectAnswerFor5or9(placeBet.Bet))
                         return RedirectToAction(nameof(Play));
                     else
-                    {
-                        placeBet.RolledNumber = rolledNumber;
-                        placeBet.Bet = bet;
                         placeBet.ErrorMessage = "Wrong Payout!";
-                    }
                     break;
                 case 6:
                 case 8:
-                    if (userAnswer == CaluclateCorrectAnswerFor6or8(bet))
+                    if (placeBet.Answer == CaluclateCorrectAnswerFor6or8(placeBet.Bet))
                         return RedirectToAction(nameof(Play));
                     else
-                    {
-                        placeBet.RolledNumber = rolledNumber;
-                        placeBet.Bet = bet;
                         placeBet.ErrorMessage = "Wrong Payout!";
-                    }
                     break;
             }
 
