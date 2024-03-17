@@ -7,29 +7,20 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     [Area("Customer")]
     public class HornHighController : Controller
     {
-        public PropBet hornHigh;
-
         public IActionResult Play()
         {
-            hornHigh = GenerateNewHornHighBet();
+            PropBet hornHigh = GenerateNewHornHighBet();
             return View(hornHigh);
         }
 
         [HttpPost]
-        public IActionResult Play(int userAnswer,int bet, int rolledNumber, int placedBet)
+        public IActionResult Play(PropBet hornHigh)
         {
-            if(userAnswer == CalculateCorrectAnswer(bet,placedBet, rolledNumber))
-            {
+            if(hornHigh.Answer == CalculateCorrectAnswer(hornHigh.Bet, hornHigh.PlacedBet, hornHigh.RolledNumber))
                 return RedirectToAction(nameof(Play));
-            }
             else
             {
-                hornHigh = new PropBet();
-                hornHigh.Bet = bet;
-                hornHigh.RolledNumber = placedBet;
-                hornHigh.PlacedBet = placedBet;
                 hornHigh.ErrorMessage = "Wrong Payout!";
-
                 return View(hornHigh);
             }
         }
@@ -44,7 +35,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             return hornHigh;
         }
 
-        private int CalculateCorrectAnswer(int bet, int placedBet, int rolledNumber)
+        private int CalculateCorrectAnswer(int bet, int? placedBet, int rolledNumber)
         {
             int result = 0;
 

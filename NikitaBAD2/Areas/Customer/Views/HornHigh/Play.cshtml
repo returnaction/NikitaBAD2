@@ -22,8 +22,8 @@
             <input asp-for="@Model.PlacedBet" name="placedBet" hidden />
 
             <div class="form-group">
-                <label for="userAnser">Answer:</label>
-                <input type="number" id="userAnswer" name="userAnswer" min="0" required autofocus />
+                <label asp-for="@Model.Answer">Answer:</label>
+                <input asp-for="@Model.Answer" type="number" min="0" required autofocus />
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Submit Answer</button>
