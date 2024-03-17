@@ -13,49 +13,32 @@ namespace NikitaBAD2.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Play(int userAnswer, int rolledNumber, int flatBet, int odds)
+        public IActionResult Play(ComeBet comeBet)
         {
-            ComeBet comeBet = new();
-            switch (rolledNumber)
+            switch (comeBet.RolledNumber)
             {
                 case 4:
                 case 10:
-                    if (userAnswer == CaluclateCorrectAnswerFor4or10(flatBet, odds))
+                    if (comeBet.Answer == CaluclateCorrectAnswerFor4or10(comeBet.FlatBet, comeBet.Odds))
                         return RedirectToAction(nameof(Play));
                     else
-                    {
-                        comeBet.FlatBet = flatBet;
-                        comeBet.Odds = odds;
-                        comeBet.RolledNumber = rolledNumber;
                         comeBet.ErrorMessage = "Wrong Payout!";
-                    }
                     break;
 
                 case 5:
                 case 9:
-                    if (userAnswer == CaluclateCorrectAnswerFor5or9(flatBet, odds))
+                    if (comeBet.Answer == CaluclateCorrectAnswerFor5or9(comeBet.FlatBet, comeBet.Odds))
                         return RedirectToAction(nameof(Play));
                     else
-                    {
-                        comeBet.FlatBet = flatBet;
-                        comeBet.Odds = odds;
-                        comeBet.RolledNumber = rolledNumber;
                         comeBet.ErrorMessage = "Wrong Payout!";
-                    }
                     break;
 
                 case 6:
                 case 8:
-                    if (userAnswer == CaluclateCorrectAnswerFor6or8(flatBet, odds))
+                    if (comeBet.Answer == CaluclateCorrectAnswerFor6or8(comeBet.FlatBet, comeBet.Odds))
                         return RedirectToAction(nameof(Play));
                     else
-                    {
-                        comeBet.FlatBet = flatBet;
-                        comeBet.Odds = odds;
-                        comeBet.RolledNumber = rolledNumber;
                         comeBet.ErrorMessage = "Wrong Payout!";
-                    }
-
                     break;
             }
 

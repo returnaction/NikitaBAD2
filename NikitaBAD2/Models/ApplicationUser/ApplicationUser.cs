@@ -27,5 +27,6 @@ namespace NikitaBAD2.Models.ApplicationUser
 
         // horn bet
         public int LongestCorrectAnswerStrekHORN { get; set; }
+
     }
 }

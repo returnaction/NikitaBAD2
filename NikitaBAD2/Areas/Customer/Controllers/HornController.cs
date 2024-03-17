@@ -10,32 +10,27 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     [Area("Customer")]
     public class HornController : Controller
     {
-        public PropBet hornBet;
-
         public IActionResult Play()
         {
-            hornBet = GenerateNewHornBet();
+            PropBet hornBet = GenerateNewHornBet();
             return View(hornBet);
         }
 
 
         // Change later to get a model instead of 3 different numbers
         [HttpPost]
-        public IActionResult Play(int userAnswer, int bet, int rolledNumber)
+        public IActionResult Play(PropBet propBet)
         {
             // if answer is correct 
-            if(userAnswer == CalculateCorrectAnswer(bet, rolledNumber))
+            if(propBet.Answer == CalculateCorrectAnswer(propBet.Bet, propBet.RolledNumber))
             {
                 return RedirectToAction(nameof(Play));
             }
             // if answer is wrong
             else
             {
-                hornBet = new PropBet();
-                hornBet.Bet = bet;
-                hornBet.RolledNumber = rolledNumber;
-                hornBet.ErrorMessage = "Wrong Payout!";
-                return View(hornBet);
+                propBet.ErrorMessage = "Wrong Payout!";
+                return View(propBet);
             }
 
         }

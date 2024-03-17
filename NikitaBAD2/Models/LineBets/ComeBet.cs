@@ -6,7 +6,7 @@
         public int Odds { get; set; }
         public int RolledNumber { get; set; }
         public string ErrorMessage { get; set; } = null!;
-        public int CorrectAnswer { get; set; }
+        public int Answer { get; set; }
 
     }
 }
