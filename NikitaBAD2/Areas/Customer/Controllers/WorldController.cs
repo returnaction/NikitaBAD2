@@ -6,29 +6,21 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     [Area("Customer")]
     public class WorldController : Controller
     {
-        public PropBet worldBet;
-
         public IActionResult Play()
         {
-            worldBet = GenerateWorlBet();
+            PropBet worldBet = GenerateWorlBet();
             return View(worldBet);
         }
 
         [HttpPost]
-        public IActionResult Play(int userAnswer, int rolledNumber, int bet)
+        public IActionResult Play(PropBet propBet)
         {
-            if(userAnswer == CalculateCorrectAnswer(bet, rolledNumber))
-            {
+            if(propBet.Answer == CalculateCorrectAnswer(propBet.Bet, propBet.RolledNumber))
                 return RedirectToAction(nameof(Play));
-            }
             else
             {
-                worldBet = new PropBet();
-                worldBet.Bet = bet;
-                worldBet.RolledNumber = rolledNumber;
-                worldBet.ErrorMessage = "Wrong Payout!";
-
-                return View(worldBet);
+                propBet.ErrorMessage = "Wrong Payout!";
+                return View(propBet);
             }
         }
 
