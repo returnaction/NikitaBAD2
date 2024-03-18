@@ -1,6 +1,5 @@
 ﻿using NikitaBAD2.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using NikitaBAD2.Models.ApplicationUser;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
@@ -24,6 +23,6 @@ namespace NikitaBAD2.Models
         [ForeignKey("UserGameId")]
         public IdentityUser ApplicationUser { get; set; }
 
-     
+
     }
 }
