@@ -40,30 +40,28 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             // check latter if there is null in here
             var identityUser = await _userManager.GetUserAsync(HttpContext.User);
 
-            PlayerGames? hornGame = _context.PlayerGames.FirstOrDefault(g => g.UserId == identityUser.Id && g.GameType == currentGame);
-
+            PlayerGames? hornGame = await _context.PlayerGames.FirstOrDefaultAsync(g => g.UserId == identityUser!.Id && g.GameType == currentGame);
 
             // if game is null it means we need to create a new game with empty count
             if(hornGame is null)
             {
-                hornGame = new PlayerGames { GameType = currentGame, UserId = identityUser!.Id, BestResult = 0 , TempBestResult = 0};
+                hornGame = new PlayerGames { GameType = currentGame, UserId = identityUser!.Id, TempBestResult = 0 , LongestCorrectAsnwerStreak = 0, TotalAnswers = 0};
 
-                _context.PlayerGames.Add(hornGame);
-                _context.SaveChanges();
+                await _context.PlayerGames.AddAsync(hornGame);
+                await _context.SaveChangesAsync();
             }
             // if not null we are going to user this game
             
-
-
             // if answer is correct 
             if (propBet.Answer == CalculateCorrectAnswer(propBet.Bet, propBet.RolledNumber))
             {
                 //if(hornGame.BestResult)
                 hornGame.TempBestResult++;
-                if(hornGame.TempBestResult > hornGame.BestResult)
+                hornGame.TotalAnswers++;
+                if(hornGame.TempBestResult > hornGame.LongestCorrectAsnwerStreak)
                 {
-                    hornGame.BestResult = hornGame.TempBestResult;
-                    _context.SaveChanges();
+                    hornGame.LongestCorrectAsnwerStreak = hornGame.TempBestResult;
+                    await _context.SaveChangesAsync();
                 }
                 
                 return RedirectToAction(nameof(Play));
@@ -73,6 +71,9 @@ namespace NikitaBAD2.Areas.Customer.Controllers
             {
                 propBet.ErrorMessage = "Wrong Payout!";
                 hornGame.TempBestResult = 0;
+                hornGame.TotalAnswers++;
+                await _context.SaveChangesAsync();
+
                 return View(propBet);
             }
 

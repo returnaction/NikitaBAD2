@@ -13,9 +13,11 @@ namespace NikitaBAD2.Models
 
         public EGames GameType { get; set; }
 
-        public int BestResult { get; set; }
+        public int LongestCorrectAsnwerStreak { get; set; }
 
         public int TempBestResult { get; set; } = 0;
+
+        public int TotalAnswers { get; set; }
 
         public string UserId { get; set; } = null!;
 
