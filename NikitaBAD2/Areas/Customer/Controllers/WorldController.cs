@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NikitaBAD2.Data;
+using NikitaBAD2.Models;
+using NikitaBAD2.Models.Enums;
 using NikitaBAD2.Models.PropBets;
 
 namespace NikitaBAD2.Areas.Customer.Controllers
@@ -6,6 +11,17 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     [Area("Customer")]
     public class WorldController : Controller
     {
+        private const EGames currentGame = EGames.WorldBet;
+
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _context;
+
+        public WorldController(UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        {
+            _userManager = userManager;
+            _context = context;
+        }
+
         public IActionResult Play()
         {
             PropBet worldBet = GenerateWorlBet();
@@ -13,13 +29,38 @@ namespace NikitaBAD2.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Play(PropBet propBet)
+        public async Task<IActionResult> Play(PropBet propBet)
         {
+
+            var identityUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            PlayerGames? worldBetGame = await _context.PlayerGames.FirstOrDefaultAsync(g => g.UserId == identityUser!.Id && g.GameType == currentGame);
+
+            if(worldBetGame is null)
+            {
+                worldBetGame = new PlayerGames { GameType = currentGame, UserId = identityUser!.Id, TempBestResult = 0, LongestCorrectAsnwerStreak = 0, TotalAnswers = 0 };
+
+                await _context.PlayerGames.AddAsync(worldBetGame);
+                await _context.SaveChangesAsync();
+            }
+
             if(propBet.Answer == CalculateCorrectAnswer(propBet.Bet, propBet.RolledNumber))
+            {
+                worldBetGame.TempBestResult++;
+                worldBetGame.TotalAnswers++;
+                if(worldBetGame.TempBestResult > worldBetGame.LongestCorrectAsnwerStreak)
+                {
+                    worldBetGame.LongestCorrectAsnwerStreak = worldBetGame.TempBestResult;
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Play));
+            }
             else
             {
                 propBet.ErrorMessage = "Wrong Payout!";
+                worldBetGame.TempBestResult = 0;
+                worldBetGame.TotalAnswers++;
+                await _context.SaveChangesAsync();
                 return View(propBet);
             }
         }
