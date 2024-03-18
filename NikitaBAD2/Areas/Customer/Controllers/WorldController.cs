@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NikitaBAD2.Data;
@@ -29,6 +30,7 @@ namespace NikitaBAD2.Areas.Customer.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Play(PropBet propBet)
         {
 

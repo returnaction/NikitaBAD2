@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NikitaBAD2.Data;
+using NikitaBAD2.Models;
+using NikitaBAD2.Models.Enums;
 using NikitaBAD2.Models.LineBets;
 
 namespace NikitaBAD2.Areas.Customer.Controllers
@@ -6,6 +12,17 @@ namespace NikitaBAD2.Areas.Customer.Controllers
     [Area("Customer")]
     public class ComeBetController : Controller
     {
+        private const EGames currentGame = EGames.HornBet;
+
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _context;
+
+        public ComeBetController(UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        {
+            _userManager = userManager;
+            _context = context;
+        }
+
         public IActionResult Play()
         {
             ComeBet comeBet = GenerateComeBet();
@@ -13,32 +30,94 @@ namespace NikitaBAD2.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Play(ComeBet comeBet)
+        [Authorize]
+        public async Task<IActionResult> Play(ComeBet comeBet)
         {
+            var identityUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            PlayerGames? comeBetGame = await _context.PlayerGames.FirstOrDefaultAsync(g => g.UserId == identityUser!.Id && g.GameType == currentGame);
+
+            // if game is null it means we need to create a new game with empty count
+            if (comeBetGame is null)
+            {
+                comeBetGame = new PlayerGames { GameType = currentGame, UserId = identityUser!.Id, TempBestResult = 0, LongestCorrectAsnwerStreak = 0, TotalAnswers = 0 };
+
+                await _context.PlayerGames.AddAsync(comeBetGame);
+                await _context.SaveChangesAsync();
+            }
+
             switch (comeBet.RolledNumber)
             {
                 case 4:
                 case 10:
                     if (comeBet.Answer == CaluclateCorrectAnswerFor4or10(comeBet.FlatBet, comeBet.Odds))
+                    {
+                        comeBetGame.TempBestResult++;
+                        comeBetGame.TotalAnswers++;
+                        if (comeBetGame.TempBestResult > comeBetGame.LongestCorrectAsnwerStreak)
+                        {
+                            comeBetGame.LongestCorrectAsnwerStreak = comeBetGame.TempBestResult;
+                            await _context.SaveChangesAsync();
+                        }
+
                         return RedirectToAction(nameof(Play));
+                    }
                     else
+                    {
                         comeBet.ErrorMessage = "Wrong Payout!";
+
+                        comeBetGame.TempBestResult = 0;
+                        comeBetGame.TotalAnswers++;
+                        await _context.SaveChangesAsync();
+                    }
                     break;
 
                 case 5:
                 case 9:
                     if (comeBet.Answer == CaluclateCorrectAnswerFor5or9(comeBet.FlatBet, comeBet.Odds))
+                    {
+                        comeBetGame.TempBestResult++;
+                        comeBetGame.TotalAnswers++;
+                        if (comeBetGame.TempBestResult > comeBetGame.LongestCorrectAsnwerStreak)
+                        {
+                            comeBetGame.LongestCorrectAsnwerStreak = comeBetGame.TempBestResult;
+                            await _context.SaveChangesAsync();
+                        }
+
                         return RedirectToAction(nameof(Play));
+                    }
                     else
+                    {
                         comeBet.ErrorMessage = "Wrong Payout!";
+
+                        comeBetGame.TempBestResult = 0;
+                        comeBetGame.TotalAnswers++;
+                        await _context.SaveChangesAsync();
+                    }
                     break;
 
                 case 6:
                 case 8:
                     if (comeBet.Answer == CaluclateCorrectAnswerFor6or8(comeBet.FlatBet, comeBet.Odds))
+                    {
+                        comeBetGame.TempBestResult++;
+                        comeBetGame.TotalAnswers++;
+                        if (comeBetGame.TempBestResult > comeBetGame.LongestCorrectAsnwerStreak)
+                        {
+                            comeBetGame.LongestCorrectAsnwerStreak = comeBetGame.TempBestResult;
+                            await _context.SaveChangesAsync();
+                        }
+
                         return RedirectToAction(nameof(Play));
+                    }
                     else
+                    {
                         comeBet.ErrorMessage = "Wrong Payout!";
+
+                        comeBetGame.TempBestResult = 0;
+                        comeBetGame.TotalAnswers++;
+                        await _context.SaveChangesAsync();
+                    }
                     break;
             }
 
